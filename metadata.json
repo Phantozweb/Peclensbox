@@ -1,0 +1,5 @@
+{
+  "name": "LensBox Feedback Manager",
+  "description": "A desktop CRM and feedback management system for LensBox, featuring role-based access, statistics, and WhatsApp integration.",
+  "requestFramePermissions": []
+}
