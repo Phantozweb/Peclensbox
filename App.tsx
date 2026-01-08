@@ -25,8 +25,11 @@ const App: React.FC = () => {
         alert("Invalid Password. Please check your credentials.");
       }
     } else if (emailInput === STAFF_EMAIL) {
-      // Staff login allows any password for demo purposes, or enforce if needed later
-      setUser({ email: emailInput, name: 'Staff Member', role: UserRole.STAFF });
+      if (passwordInput === 'staff@lensboxpecmdu') {
+        setUser({ email: emailInput, name: 'Staff Member', role: UserRole.STAFF });
+      } else {
+        alert("Invalid Password. Please check your credentials.");
+      }
     } else {
       alert("Invalid Email. Use authorized credentials.");
     }
@@ -48,6 +51,11 @@ const App: React.FC = () => {
       id: Math.random().toString(36).substr(2, 9)
     };
     setCustomers(prev => [...prev, cust]);
+  };
+
+  const importCustomers = (importedData: Customer[]) => {
+    setCustomers(importedData);
+    alert(`Successfully imported ${importedData.length} patient records.`);
   };
 
   if (!user) {
@@ -284,6 +292,7 @@ const App: React.FC = () => {
                     user={user}
                     onUpdateCustomer={updateCustomer}
                     onAddCustomer={addCustomer}
+                    onImportCustomers={importCustomers}
                 />
             </div>
           </div>

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Customer, AppSettings, User, UserRole } from '../types';
-import { MessageCircle, Check, X, Edit2, ShieldCheck, Filter, Search, ChevronDown, Calendar, User as UserIcon, Phone } from 'lucide-react';
+import { MessageCircle, Check, X, Edit2, ShieldCheck, Filter, Search, ChevronDown, Calendar, User as UserIcon, Phone, Download, Upload } from 'lucide-react';
 
 interface CustomerTableProps {
   customers: Customer[];
@@ -8,6 +8,7 @@ interface CustomerTableProps {
   user: User;
   onUpdateCustomer: (customer: Customer) => void;
   onAddCustomer: (customer: Omit<Customer, 'id'>) => void;
+  onImportCustomers: (customers: Customer[]) => void;
 }
 
 export const CustomerTable: React.FC<CustomerTableProps> = ({
@@ -15,12 +16,16 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
   settings,
   user,
   onUpdateCustomer,
-  onAddCustomer
+  onAddCustomer,
+  onImportCustomers
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  
+  // File Input Ref for Import
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form State
   const [formData, setFormData] = useState<Partial<Customer>>({
@@ -91,6 +96,49 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
     onUpdateCustomer({ ...customer, isApproved: !customer.isApproved });
   };
 
+  // Export / Import Logic
+  const handleExport = () => {
+    const dataStr = JSON.stringify(customers, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `lensbox_backup_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const parsed = JSON.parse(content);
+        if (Array.isArray(parsed)) {
+          if(window.confirm(`Found ${parsed.length} records. This will replace the current data on your screen. Do you want to continue?`)) {
+             onImportCustomers(parsed);
+          }
+        } else {
+          alert("Invalid file format. Expected an array of customers.");
+        }
+      } catch (error) {
+        alert("Error parsing JSON file");
+      }
+      // Reset input
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+    reader.readAsText(file);
+  };
+
+
   // Filtering
   const filteredCustomers = customers.filter(c => {
     const matchesSearch = c.customerName.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -131,14 +179,45 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
           </div>
         </div>
-        <button 
-          onClick={handleAddNew}
-          className="bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-700 transition w-full md:w-auto shadow-md shadow-blue-500/20 flex items-center justify-center gap-2"
-          aria-label="Add new patient"
-        >
-          <UserIcon className="w-4 h-4" />
-          Add Patient
-        </button>
+        
+        <div className="flex gap-2 w-full md:w-auto">
+          {user.role === UserRole.ADMIN && (
+            <>
+              <button
+                onClick={handleExport}
+                className="bg-white text-gray-700 px-3 py-2.5 rounded-lg text-sm font-semibold border border-gray-300 hover:bg-gray-50 transition shadow-sm flex items-center justify-center gap-2"
+                title="Export Data Backup"
+              >
+                <Download className="w-4 h-4" />
+                <span className="hidden sm:inline">Export</span>
+              </button>
+              <button
+                onClick={handleImportClick}
+                className="bg-white text-gray-700 px-3 py-2.5 rounded-lg text-sm font-semibold border border-gray-300 hover:bg-gray-50 transition shadow-sm flex items-center justify-center gap-2"
+                title="Import Data Backup"
+              >
+                <Upload className="w-4 h-4" />
+                <span className="hidden sm:inline">Import</span>
+              </button>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileChange} 
+                className="hidden" 
+                accept="application/json" 
+              />
+            </>
+          )}
+
+          <button 
+            onClick={handleAddNew}
+            className="bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-700 transition w-full md:w-auto shadow-md shadow-blue-500/20 flex items-center justify-center gap-2"
+            aria-label="Add new patient"
+          >
+            <UserIcon className="w-4 h-4" />
+            Add Patient
+          </button>
+        </div>
       </div>
 
       {/* Table */}
