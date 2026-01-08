@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Customer, AppSettings, User, UserRole, ADMIN_EMAIL, STAFF_EMAIL } from './types';
-import { INITIAL_CUSTOMERS, INITIAL_SETTINGS } from './services/mockService';
-import { DashboardStats } from './components/DashboardStats';
-import { CustomerTable } from './components/CustomerTable';
-import { SettingsPanel } from './components/SettingsPanel';
+import { Customer, AppSettings, User, UserRole, ADMIN_EMAIL, STAFF_EMAIL } from './types.ts';
+import { INITIAL_CUSTOMERS, INITIAL_SETTINGS } from './services/mockService.ts';
+import { DashboardStats } from './components/DashboardStats.tsx';
+import { CustomerTable } from './components/CustomerTable.tsx';
+import { SettingsPanel } from './components/SettingsPanel.tsx';
 import { LogOut, PieChart, Users, Settings as SettingsIcon, Shield, ExternalLink, ArrowRight, MessageCircle, BarChart3, Lock, CheckCircle2, Box, Activity } from 'lucide-react';
 
 const App: React.FC = () => {

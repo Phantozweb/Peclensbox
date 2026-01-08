@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Customer, AppSettings, User, UserRole } from '../types';
+import { Customer, AppSettings, User, UserRole } from '../types.ts';
 import { MessageCircle, Check, X, Edit2, ShieldCheck, Filter, Search, ChevronDown, Calendar, User as UserIcon, Phone, Download, Upload } from 'lucide-react';
 
 interface CustomerTableProps {

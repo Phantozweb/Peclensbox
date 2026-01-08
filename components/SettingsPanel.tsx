@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AppSettings } from '../types';
+import { AppSettings } from '../types.ts';
 import { Save, Plus, Trash2, LayoutTemplate, Building2, Users, MessageSquare, Image as ImageIcon, Eye } from 'lucide-react';
 
 interface SettingsPanelProps {

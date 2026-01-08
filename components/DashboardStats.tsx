@@ -1,5 +1,5 @@
 import React from 'react';
-import { Customer } from '../types';
+import { Customer } from '../types.ts';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { CheckCircle2, PhoneOff, Clock } from 'lucide-react';
 

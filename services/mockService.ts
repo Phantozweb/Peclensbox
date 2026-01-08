@@ -1,4 +1,4 @@
-import { AppSettings, Customer } from '../types';
+import { AppSettings, Customer } from '../types.ts';
 
 export const INITIAL_SETTINGS: AppSettings = {
   companyName: "LensBox",
