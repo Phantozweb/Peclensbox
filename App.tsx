@@ -25,7 +25,7 @@ const App: React.FC = () => {
         alert("Invalid Password. Please check your credentials.");
       }
     } else if (emailInput === STAFF_EMAIL) {
-      if (passwordInput === 'staff@lensboxpecmdu') {
+      if (passwordInput === 'frstaff@lensboxpecmdu') {
         setUser({ email: emailInput, name: 'Staff Member', role: UserRole.STAFF });
       } else {
         alert("Invalid Password. Please check your credentials.");
